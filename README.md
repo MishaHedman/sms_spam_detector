@@ -40,21 +40,22 @@ def sms_classification(sms_text_df):
 
     # Build a pipeline to transform the test set to compare to the training set.
     text_clf = Pipeline([('tfidf', TfidfVectorizer(stop_words='english')),
-                     ('clf', LinearSVC()),
+                        ('clf', LinearSVC()),
     ])
 
     # Fit the model to the transformed training data and return model.
     text_clf.fit(X_train, y_train)
     return text_clf
 
-    # Load the text_clf dataset into a DataFrame
-text_clf = pd.read_csv('Resources/SMSSpamCollection.csv')
+# Load the text_clf dataset into a DataFrame
+sms_data = pd.read_csv('Resources/SMSSpamCollection.csv')
 
 # Call the sms_classification function with the DataFrame and set the result to the "text_clf" variable
-text_clf = sms_classification(text_clf)
+text_clf = sms_classification(sms_data)
 
 # Create a function called `sms_prediction` that takes in the SMS text and predicts the whether the text is "not spam" or "spam". 
 # The function should return the SMS message, and say whether the text is "not spam" or "spam".
+
 def sms_prediction(text):
     """
     Predict the spam/ham classification of a given text message using a pre-trained model.
@@ -70,15 +71,15 @@ def sms_prediction(text):
     classified as spam or not.
     """
     # Create a variable that will hold the prediction of a new text.
-    sms_prediction = text_clf.predict([text])[0]
+    prediction = text_clf.predict([text])[0]
     # Using a conditional if the prediction is "ham" return the message:
     # f'The text message: "{text}", is not spam.' Else, return f'The text message: "{text}", is spam.'
-    if sms_prediction == 'ham':
+    if prediction == 'ham':
         return f'The text message: "{text}", is not spam.'
     else:
         return f'The text message: "{text}", is spam.'
 
- # Create a sms_app that takes a textbox for the inputs and has a textbox for the output.  
+# Create a sms_app that takes a textbox for the inputs and has a textbox for the output.  
 # Povide labels for each textbox. 
 
 
@@ -91,11 +92,10 @@ app = gr.Interface(
     fn=sms_prediction, 
     inputs = [
         gr.Textbox (label = 'What is the message you want to test?')], 
-    outputs=gr.Textbox (label = 'Our app has determined:'))
+    outputs=gr.Textbox (lines = 5, label = 'Our app has determined:'))
 
 # Launch the app.
-app.launch(share=True)
-# interface.launch(share=True)
+app.launch(share=True, show_error=True)
 
 ## Test the following text messages. 
 
